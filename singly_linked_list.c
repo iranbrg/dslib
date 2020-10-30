@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct Node {
     // Can be replaced by whatever datatype is required
@@ -102,26 +103,41 @@ void insert(const int idx, const int data) {
 // ### DELETION FUNCTIONS ###
 // ##########################
 
-// Delete a node at the beginning of the linked list and returns it
-static Node *delete_first() {
-    // Node to be deleted
-    Node *deleted_node = head;
+// Delete a node at the beginning of the linked list and returns its data
+static int delete_first() {
+    // If there's is some node in the list its data'll be returned
+    // otherwise 'false' will be returned
+    if (head) {
+        // Node to be deleted
+        Node *deleted_node = head;
+        int returned_data;
 
-    // Points it to seconde node which will become the new first node
-    head = head->nxt;
+        // Points it to seconde node which will become the new first node
+        head = head->nxt;
 
-    deleted_node->nxt = NULL;
+        deleted_node->nxt = NULL;
 
-    --size;
+        --size;
 
-    return deleted_node;
+        returned_data = deleted_node->data;
+
+        free(deleted_node);
+        deleted_node = NULL;
+
+        return returned_data;
+    } else {
+        return false;
+    }
 }
 
-// Delete a node at the end of the linked list and returns it
-static Node *delete_last() {
+// Delete a node at the end of the linked list and returns its data
+static int delete_last() {
+    // If there's is some node in the list its data'll be returned
+    // otherwise 'false' will be returned
+    if (head) {
     // Node to be deleted
-    Node *deleted_node = tail;
     Node *previous_node = head;
+    int returned_data;
 
     while (previous_node->nxt != NULL) {
         // Find the node previous to the node which will be deleted
@@ -132,18 +148,29 @@ static Node *delete_last() {
     // which means it'll become the new last node
     previous_node->nxt = NULL;
 
+    --size;
+
+    returned_data = tail->data;
+
+    free(tail);
+
     // Makes the second last node become the last node
     tail = previous_node;
 
-    --size;
-
-    return deleted_node;
+    return returned_data;
+    } else {
+        return false;
+    }
 }
 
-// Delete a node in the middle of the list and returns it
-static Node *delete_middle(const size_t idx) {
+// Delete a node in the middle of the list and returns its data
+static int delete_middle(const size_t idx) {
+    // If there's is some node in the list its data'll be returned
+    // otherwise 'false' will be returned
+    if (head) {
     // Node to be deleted
     Node *deleted_node = NULL;
+    int returned_data;
 
     // Node previous to the node to be deleted
     Node *previous_node = head;
@@ -164,11 +191,19 @@ static Node *delete_middle(const size_t idx) {
 
     --size;
 
-    return deleted_node;
+    returned_data = deleted_node->data;
+
+    free(deleted_node);
+    deleted_node = NULL;
+
+    return returned_data;
+    } else {
+        return false;
+    }
 }
 
-// Deletes a node at the specified position and returns it
-Node *delete(const int idx) {
+// Deletes a node at the specified position and returns its data
+int delete(const int idx) {
     if (idx == 0)
         return delete_first();
     else if (idx == -1)
